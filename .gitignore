@@ -1,0 +1,17 @@
+.env
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.DS_Store
+
+# Generated local state. Rebuild from examples/vault.
+storage/chroma/
+storage/runs/
+storage/logs/
+
+# A real personal vault must never be committed.
+storage/vault/
+.obsidian/
+

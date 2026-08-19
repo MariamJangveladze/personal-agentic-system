@@ -1,0 +1,38 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "personal-agentic-system"
+version = "0.1.0"
+description = "A local-first, approval-gated personal agent system derived from MJ-OS patterns."
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+  "chromadb>=0.5,<1.0",
+  "mcp>=1.27,<2",
+  "pydantic>=2.8,<3",
+  "requests>=2.32,<3",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8,<9",
+  "ruff>=0.9,<1",
+]
+
+[project.scripts]
+pas = "personal_agentic_system.cli:main"
+pas-mcp = "personal_agentic_system.mcp_server:main"
+pas-telegram = "personal_agentic_system.telegram_gateway:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/personal_agentic_system"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
