@@ -1,0 +1,181 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="960" viewBox="0 0 1600 960" role="img" aria-labelledby="title description">
+  <title id="title">Personal Agentic System architecture</title>
+  <desc id="description">A local-first agent workflow connecting four interfaces to retrieval, Ollama drafting, human approval, deterministic artifact writing, memory, and audit traces.</desc>
+  <defs>
+    <linearGradient id="background" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#071117"/>
+      <stop offset="0.55" stop-color="#0b1420"/>
+      <stop offset="1" stop-color="#101326"/>
+    </linearGradient>
+    <linearGradient id="control" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#0d6370"/>
+      <stop offset="0.5" stop-color="#304a87"/>
+      <stop offset="1" stop-color="#6d3f82"/>
+    </linearGradient>
+    <linearGradient id="approval" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f7b84b"/>
+      <stop offset="1" stop-color="#f56f72"/>
+    </linearGradient>
+    <linearGradient id="knowledge" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#142c35"/>
+      <stop offset="1" stop-color="#242747"/>
+    </linearGradient>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#9dd5e5" stroke-opacity="0.05" stroke-width="1"/>
+    </pattern>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="14" stdDeviation="14" flood-color="#000000" flood-opacity="0.3"/>
+    </filter>
+    <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="7" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#83d7e9"/>
+    </marker>
+    <style>
+      .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+      .mono { font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace; }
+      .eyebrow { font-size: 17px; font-weight: 700; letter-spacing: 3px; }
+      .title { font-size: 48px; font-weight: 760; letter-spacing: -1.2px; }
+      .subtitle { font-size: 20px; font-weight: 450; }
+      .node-title { font-size: 23px; font-weight: 720; }
+      .node-copy { font-size: 16px; font-weight: 450; }
+      .small { font-size: 14px; font-weight: 650; letter-spacing: 1.1px; }
+    </style>
+  </defs>
+
+  <rect width="1600" height="960" rx="30" fill="url(#background)"/>
+  <rect width="1600" height="960" rx="30" fill="url(#grid)"/>
+  <circle cx="1360" cy="60" r="270" fill="#8b5cf6" opacity="0.07"/>
+  <circle cx="120" cy="850" r="270" fill="#1dd3b0" opacity="0.06"/>
+
+  <g class="sans">
+    <text x="84" y="78" class="eyebrow" fill="#65d6e8">MJ · PORTFOLIO SYSTEM  /  01</text>
+    <text x="84" y="134" class="title" fill="#f4f8fb">Personal Agentic System</text>
+    <text x="84" y="171" class="subtitle" fill="#9db0bd">Local intelligence. Explicit control. Auditable outcomes.</text>
+
+    <g transform="translate(84 215)">
+      <text x="0" y="0" class="small" fill="#7e93a3">INTERACTION CHANNELS</text>
+      <g transform="translate(0 22)">
+        <rect width="280" height="64" rx="16" fill="#121f29" stroke="#27404c"/>
+        <circle cx="32" cy="32" r="8" fill="#57c9dc"/>
+        <text x="54" y="39" class="node-copy" fill="#eaf4f7">REST API</text>
+      </g>
+      <g transform="translate(300 22)">
+        <rect width="280" height="64" rx="16" fill="#121f29" stroke="#27404c"/>
+        <circle cx="32" cy="32" r="8" fill="#57c9dc"/>
+        <text x="54" y="39" class="node-copy" fill="#eaf4f7">MCP CLIENTS</text>
+      </g>
+      <g transform="translate(600 22)">
+        <rect width="280" height="64" rx="16" fill="#121f29" stroke="#27404c"/>
+        <circle cx="32" cy="32" r="8" fill="#57c9dc"/>
+        <text x="54" y="39" class="node-copy" fill="#eaf4f7">TELEGRAM</text>
+      </g>
+      <g transform="translate(900 22)">
+        <rect width="280" height="64" rx="16" fill="#121f29" stroke="#27404c"/>
+        <circle cx="32" cy="32" r="8" fill="#57c9dc"/>
+        <text x="54" y="39" class="node-copy" fill="#eaf4f7">LOCAL CLI</text>
+      </g>
+      <g transform="translate(1200 22)">
+        <rect width="232" height="64" rx="16" fill="#172132" stroke="#3b4960" stroke-dasharray="5 5"/>
+        <circle cx="32" cy="32" r="8" fill="#8d77da"/>
+        <text x="54" y="39" class="node-copy" fill="#d9d1f8">HERMES · NEXT</text>
+      </g>
+    </g>
+
+    <g transform="translate(84 346)" filter="url(#shadow)">
+      <rect width="1432" height="76" rx="20" fill="url(#control)"/>
+      <text x="38" y="32" class="small" fill="#b9f3fa">CONTROL PLANE</text>
+      <text x="38" y="57" class="node-copy" fill="#ffffff">Validated request · typed state · bounded tools · trace ID</text>
+      <text x="1388" y="47" text-anchor="end" class="mono" font-size="14" fill="#d9ebff">FASTAPI  /  PYDANTIC</text>
+    </g>
+
+    <path d="M 224 301 L 224 337" stroke="#83d7e9" stroke-width="2.5" marker-end="url(#arrow)"/>
+    <path d="M 524 301 L 524 337" stroke="#83d7e9" stroke-width="2.5" marker-end="url(#arrow)"/>
+    <path d="M 824 301 L 824 337" stroke="#83d7e9" stroke-width="2.5" marker-end="url(#arrow)"/>
+    <path d="M 1124 301 L 1124 337" stroke="#83d7e9" stroke-width="2.5" marker-end="url(#arrow)"/>
+
+    <g transform="translate(84 474)">
+      <text x="0" y="0" class="small" fill="#7e93a3">CONTROLLED EXECUTION PATH</text>
+
+      <g transform="translate(0 26)" filter="url(#shadow)">
+        <rect width="292" height="174" rx="22" fill="#101f29" stroke="#285361"/>
+        <text x="26" y="39" class="small" fill="#63d3e5">01 · GROUND</text>
+        <text x="26" y="78" class="node-title" fill="#f2f8fa">Retrieve context</text>
+        <text x="26" y="111" class="node-copy" fill="#9eb3bd">Source-attributed vault</text>
+        <text x="26" y="137" class="node-copy" fill="#9eb3bd">passages, locally embedded</text>
+        <circle cx="252" cy="39" r="14" fill="#183844"/>
+        <path d="M246 39h12M252 33v12" stroke="#66d5e6" stroke-width="2"/>
+      </g>
+
+      <path d="M 302 113 L 342 113" stroke="#83d7e9" stroke-width="3" marker-end="url(#arrow)"/>
+
+      <g transform="translate(354 26)" filter="url(#shadow)">
+        <rect width="292" height="174" rx="22" fill="#151d31" stroke="#3e4c7c"/>
+        <text x="26" y="39" class="small" fill="#9ea9ff">02 · PROPOSE</text>
+        <text x="26" y="78" class="node-title" fill="#f4f5ff">Ollama drafting</text>
+        <text x="26" y="111" class="node-copy" fill="#aaaed0">The model may interpret,</text>
+        <text x="26" y="137" class="node-copy" fill="#aaaed0">rank and draft—never commit</text>
+        <circle cx="252" cy="39" r="14" fill="#272c56"/>
+        <path d="M245 42l5-9 4 7 5-4" fill="none" stroke="#a9afff" stroke-width="2"/>
+      </g>
+
+      <path d="M 656 113 L 696 113" stroke="#83d7e9" stroke-width="3" marker-end="url(#arrow)"/>
+
+      <g transform="translate(708 26)" filter="url(#glow)">
+        <rect width="292" height="174" rx="22" fill="url(#approval)"/>
+        <text x="26" y="39" class="small" fill="#4c251c">03 · AUTHORIZE</text>
+        <text x="26" y="78" class="node-title" fill="#241510">Human approval</text>
+        <text x="26" y="111" class="node-copy" fill="#4c2b21">Named reviewer sees sources,</text>
+        <text x="26" y="137" class="node-copy" fill="#4c2b21">draft, assumptions and trace</text>
+        <circle cx="252" cy="39" r="14" fill="#4c251c" opacity="0.18"/>
+        <path d="M245 39l5 5 10-12" fill="none" stroke="#4c251c" stroke-width="2.5"/>
+      </g>
+
+      <path d="M 1010 113 L 1050 113" stroke="#f49b65" stroke-width="3" marker-end="url(#arrow)"/>
+
+      <g transform="translate(1062 26)" filter="url(#shadow)">
+        <rect width="370" height="174" rx="22" fill="#112923" stroke="#2d6557"/>
+        <text x="26" y="39" class="small" fill="#6ee2bc">04 · COMMIT</text>
+        <text x="26" y="78" class="node-title" fill="#effbf6">Deterministic action</text>
+        <text x="26" y="111" class="node-copy" fill="#a8c9bc">Validated state transition, artifact</text>
+        <text x="26" y="137" class="node-copy" fill="#a8c9bc">write and immutable decision record</text>
+        <circle cx="330" cy="39" r="14" fill="#1c473b"/>
+        <path d="M323 39l5 5 10-12" fill="none" stroke="#79e5c1" stroke-width="2.5"/>
+      </g>
+    </g>
+
+    <g transform="translate(84 730)">
+      <text x="0" y="0" class="small" fill="#7e93a3">LOCAL KNOWLEDGE + EVIDENCE PLANE</text>
+      <rect x="0" y="22" width="1432" height="100" rx="22" fill="url(#knowledge)" stroke="#2d3b4e"/>
+
+      <g transform="translate(32 48)">
+        <rect width="310" height="48" rx="13" fill="#10252c"/>
+        <text x="22" y="30" class="node-copy" fill="#d8f2f5">OBSIDIAN-COMPATIBLE VAULT</text>
+      </g>
+      <path d="M 358 72 L 406 72" stroke="#658797" stroke-width="2" marker-end="url(#arrow)"/>
+      <g transform="translate(420 48)">
+        <rect width="260" height="48" rx="13" fill="#172443"/>
+        <text x="22" y="30" class="node-copy" fill="#e0e5ff">OLLAMA · BGE-M3</text>
+      </g>
+      <path d="M 696 72 L 744 72" stroke="#658797" stroke-width="2" marker-end="url(#arrow)"/>
+      <g transform="translate(758 48)">
+        <rect width="236" height="48" rx="13" fill="#20213e"/>
+        <text x="22" y="30" class="node-copy" fill="#e5e1ff">CHROMA INDEX</text>
+      </g>
+      <path d="M 1010 72 L 1058 72" stroke="#658797" stroke-width="2" marker-end="url(#arrow)"/>
+      <g transform="translate(1072 48)">
+        <rect width="328" height="48" rx="13" fill="#152a27"/>
+        <text x="22" y="30" class="node-copy" fill="#ddf8ee">RUN TRACE · COST · LATENCY</text>
+      </g>
+    </g>
+
+    <g transform="translate(84 890)">
+      <circle cx="8" cy="-5" r="7" fill="#8d77da"/>
+      <text x="28" y="0" class="small" fill="#b7aaf1">NEXT:</text>
+      <text x="92" y="0" class="node-copy" fill="#9baab6">specialist-agent routing  ·  BM25 + graph retrieval  ·  Hermes orchestration adapter</text>
+      <text x="1432" y="0" text-anchor="end" class="mono" font-size="14" fill="#637786">LOCAL-FIRST / APPROVAL-GATED</text>
+    </g>
+  </g>
+</svg>

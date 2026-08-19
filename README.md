@@ -1,4 +1,12 @@
+<div align="center">
+
 # Personal Agentic System
+
+**A focused, local-first reference architecture for safe enterprise agent workflows.**
+
+`Ollama` · `Obsidian` · `Chroma` · `MCP` · `FastAPI` · `Human approval`
+
+</div>
 
 A private, portfolio-ready version of the patterns behind **MJ-OS**: local-first
 memory, Ollama embeddings, Chroma retrieval, MCP tools, and explicit human
@@ -7,6 +15,16 @@ approval before an agent can persist an artifact.
 This is not a copy of the private MJ-OS workspace. It preserves the architecture
 while replacing personal notes, credentials, generated indexes, and live bot
 configuration with safe examples.
+
+## Architecture
+
+<p align="center">
+  <img src="docs/assets/system-architecture.svg" alt="Personal Agentic System architecture: local retrieval, Ollama drafting, human approval, deterministic action and auditable traces" width="100%" />
+</p>
+
+The central design rule is simple: **models may propose; deterministic code and
+named humans authorize.** Every final artifact follows a visible state transition
+from draft to approval or rejection.
 
 ## What this demonstrates
 
@@ -19,24 +37,18 @@ configuration with safe examples.
   writes a final artifact
 - JSON run records for traceability, latency, model attribution, and estimated cost
 - An optional allowlisted Telegram command gateway without publishing secrets
+- A typed FastAPI surface for memory, runs, approvals, and operational metrics
+- A model gateway that attributes provider, model, tokens, latency, and API cost
+- Docker Compose for a repeatable local API + Ollama environment
+- GitHub Actions quality checks for every proposed change
 
-## System flow
+## Focused portfolio scenario
 
-```mermaid
-flowchart LR
-    U[User objective] --> R[Retrieve vault context]
-    V[Example Obsidian vault] --> E[Ollama bge-m3 embeddings]
-    E --> C[(Chroma)]
-    C --> R
-    R --> A[Ollama drafting agent]
-    A --> G{Human approval}
-    G -->|Approve| W[Deterministic artifact write]
-    G -->|Reject| X[Closed without action]
-    R --> T[Run trace]
-    A --> T
-    G --> T
-    W --> T
-```
+A fictional enterprise operations team requests an AI exception-handling
+checklist. The system retrieves approved controls, drafts a recommendation,
+pauses for a named reviewer, and only then writes—or refuses to write—the final
+artifact. The run retains its sources, model attribution, latency, decision, and
+reviewer.
 
 ## Quick start
 
@@ -77,6 +89,21 @@ flowchart LR
    pas-telegram
    ```
 
+6. Run the typed REST API locally:
+
+   ```bash
+   pas-api
+   # Interactive API documentation: http://localhost:8001/docs
+   ```
+
+Or start the API and Ollama together:
+
+```bash
+docker compose up -d --build
+docker compose exec ollama ollama pull bge-m3
+docker compose exec ollama ollama pull qwen2.5:7b
+```
+
 See [docs/architecture.md](docs/architecture.md) for boundaries and design
 decisions, and [docs/system-spec.md](docs/system-spec.md) for the reusable spec.
 
@@ -88,6 +115,7 @@ ordinary deterministic Python operations with an auditable run record.
 
 ## Current status
 
-Version `0.1` is the first portfolio vertical slice. Planned extensions include
-hybrid BM25 retrieval, richer evaluation fixtures, and an integration guide for
-the Hermes operational dashboard.
+Version `0.2` provides the controlled vertical slice plus a typed API, normalized
+model attribution, container packaging, and continuous quality checks. The next
+increments add specialist-agent routing, hybrid BM25/graph retrieval, and a
+Hermes orchestration adapter without creating a second dashboard.
