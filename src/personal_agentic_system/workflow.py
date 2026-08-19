@@ -1,14 +1,12 @@
 """Approval-gated workflow: models draft; deterministic code authorizes writes."""
 
-from datetime import datetime, timezone
-import json
-from pathlib import Path
 import time
-from typing import Callable
-
-import requests
+from collections.abc import Callable
+from datetime import UTC, datetime
+from pathlib import Path
 
 from personal_agentic_system.config import Settings, settings
+from personal_agentic_system.gateway import GenerationResult, OllamaGateway
 from personal_agentic_system.memory import MemoryStore
 from personal_agentic_system.models import RunRecord, RunStatus
 
@@ -18,11 +16,13 @@ class ApprovalWorkflow:
         self,
         config: Settings = settings,
         memory: MemoryStore | None = None,
-        draft_fn: Callable[[str, list[dict]], str] | None = None,
+        draft_fn: Callable[[str, list[dict]], str | GenerationResult] | None = None,
+        gateway: OllamaGateway | None = None,
     ) -> None:
         self.config = config
         self.memory = memory or MemoryStore(config)
         self.draft_fn = draft_fn or self._draft_with_ollama
+        self.gateway = gateway or OllamaGateway(config)
 
     def _run_path(self, run_id: str) -> Path:
         return self.config.runs_path / f"{run_id}.json"
@@ -38,7 +38,9 @@ class ApprovalWorkflow:
             self._run_path(run_id).read_text(encoding="utf-8")
         )
 
-    def _draft_with_ollama(self, objective: str, context: list[dict]) -> str:
+    def _draft_with_ollama(
+        self, objective: str, context: list[dict]
+    ) -> GenerationResult:
         source_text = "\n\n".join(
             f"SOURCE: {item['source']}\n{item['text']}" for item in context
         )
@@ -47,26 +49,31 @@ class ApprovalWorkflow:
             "for the objective using only relevant supplied context. Clearly mark any "
             f"assumptions.\n\nOBJECTIVE:\n{objective}\n\nCONTEXT:\n{source_text}"
         )
-        response = requests.post(
-            f"{self.config.ollama_url}/api/generate",
-            json={"model": self.config.chat_model, "prompt": prompt, "stream": False},
-            timeout=180,
-        )
-        response.raise_for_status()
-        return response.json()["response"].strip()
+        return self.gateway.generate(prompt)
 
     def create_draft(self, objective: str, top_k: int = 5) -> RunRecord:
         started = time.perf_counter()
         context = self.memory.search(objective, top_k=top_k)
-        draft = self.draft_fn(objective, context)
+        draft_result = self.draft_fn(objective, context)
+        generation = (
+            draft_result if isinstance(draft_result, GenerationResult) else None
+        )
+        draft = generation.text if generation else draft_result
         record = RunRecord(
             objective=objective,
-            model=self.config.chat_model,
+            model=generation.model if generation else self.config.chat_model,
             sources=sorted({str(item["source"]) for item in context}),
             draft=draft,
             latency_ms=round((time.perf_counter() - started) * 1000),
             # Ollama is local, so API cost is recorded as zero; hardware cost is out of scope.
-            estimated_cost_usd=0.0,
+            estimated_cost_usd=generation.estimated_cost_usd if generation else 0.0,
+            metadata={
+                "provider": generation.provider if generation else "test-or-custom",
+                "input_tokens": generation.input_tokens if generation else None,
+                "output_tokens": generation.output_tokens if generation else None,
+                "model_latency_ms": generation.latency_ms if generation else None,
+                "finish_reason": generation.finish_reason if generation else None,
+            },
         )
         self._save(record)
         return record
@@ -87,7 +94,7 @@ class ApprovalWorkflow:
         record.reviewer = reviewer.strip()
         record.review_reason = reason.strip() or None
         record.artifact_path = str(artifact_path)
-        record.updated_at = datetime.now(timezone.utc)
+        record.updated_at = datetime.now(UTC)
         self._save(record)
         return record
 
@@ -101,7 +108,7 @@ class ApprovalWorkflow:
         record.status = RunStatus.REJECTED
         record.reviewer = reviewer.strip()
         record.review_reason = reason.strip()
-        record.updated_at = datetime.now(timezone.utc)
+        record.updated_at = datetime.now(UTC)
         self._save(record)
         return record
 
@@ -125,4 +132,3 @@ class ApprovalWorkflow:
                 sum(record.estimated_cost_usd for record in records), 6
             ),
         }
-

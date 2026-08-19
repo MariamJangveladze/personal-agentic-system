@@ -1,7 +1,6 @@
 """Rebuildable Chroma memory using local Ollama embeddings."""
 
 import hashlib
-from pathlib import Path
 
 import requests
 
@@ -18,9 +17,13 @@ class MemoryStore:
         # Import lazily so pure workflow tests do not need a running Chroma client.
         if self._collection is None:
             import chromadb
+            from chromadb.config import Settings as ChromaSettings
 
             self.config.chroma_path.mkdir(parents=True, exist_ok=True)
-            client = chromadb.PersistentClient(path=str(self.config.chroma_path))
+            client = chromadb.PersistentClient(
+                path=str(self.config.chroma_path),
+                settings=ChromaSettings(anonymized_telemetry=False),
+            )
             self._collection = client.get_or_create_collection(
                 self.config.chroma_collection
             )
