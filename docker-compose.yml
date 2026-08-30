@@ -2,7 +2,7 @@ services:
   agent-api:
     build: .
     ports:
-      - "8001:8001"
+      - "127.0.0.1:8001:8001"
     environment:
       OLLAMA_URL: http://ollama:11434
       OLLAMA_CHAT_MODEL: qwen2.5:7b
@@ -11,6 +11,7 @@ services:
       ANONYMIZED_TELEMETRY: "false"
       VAULT_PATH: /app/examples/vault
       RUNS_PATH: /app/storage/runs
+      API_CONTROL_TOKEN: ${API_CONTROL_TOKEN:?Set API_CONTROL_TOKEN in .env}
     volumes:
       - agent-storage:/app/storage
     depends_on:

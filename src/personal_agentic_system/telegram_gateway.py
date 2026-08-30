@@ -84,7 +84,8 @@ class TelegramGateway:
                     if isinstance(chat_id, int) and text:
                         self.send(chat_id, self.handle_message(chat_id, text))
             except requests.RequestException:
-                logger.exception("Telegram polling failed; retrying")
+                # Request exceptions can contain the token-bearing Telegram URL.
+                logger.warning("Telegram polling failed; retrying without request details")
                 time.sleep(5)
 
 
@@ -95,4 +96,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-

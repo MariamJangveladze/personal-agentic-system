@@ -16,8 +16,9 @@ class Settings:
     )
     vault_path: Path = Path(os.getenv("VAULT_PATH", "examples/vault"))
     runs_path: Path = Path(os.getenv("RUNS_PATH", "storage/runs"))
-    api_host: str = os.getenv("API_HOST", "0.0.0.0")
+    api_host: str = os.getenv("API_HOST", "127.0.0.1")
     api_port: int = int(os.getenv("API_PORT", "8001"))
+    api_control_token: str = os.getenv("API_CONTROL_TOKEN", "")
     telegram_bot_token: str = os.getenv("TELEGRAM_BOT_TOKEN", "")
     telegram_allowed_chat_ids: tuple[int, ...] = tuple(
         int(chat_id.strip())

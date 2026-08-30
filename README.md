@@ -96,6 +96,8 @@ reviewer.
    # Interactive API documentation: http://localhost:8001/docs
    ```
 
+   Control endpoints require `Authorization: Bearer <API_CONTROL_TOKEN>`.
+
 Or start the API and Ollama together:
 
 ```bash
@@ -119,3 +121,8 @@ Version `0.2` provides the controlled vertical slice plus a typed API, normalize
 model attribution, container packaging, and continuous quality checks. The next
 increments add specialist-agent routing, hybrid BM25/graph retrieval, and a
 Hermes orchestration adapter without creating a second dashboard.
+
+## Usage and copyright
+
+Portfolio review only. No open-source license is granted. See [COPYRIGHT.md](COPYRIGHT.md)
+and report security concerns privately as described in [SECURITY.md](SECURITY.md).

@@ -1,5 +1,7 @@
 """Approval-gated workflow: models draft; deterministic code authorizes writes."""
 
+import re
+import threading
 import time
 from collections.abc import Callable
 from datetime import UTC, datetime
@@ -12,6 +14,8 @@ from personal_agentic_system.models import RunRecord, RunStatus
 
 
 class ApprovalWorkflow:
+    _RUN_ID_PATTERN = re.compile(r"^[a-f0-9]{12}$")
+
     def __init__(
         self,
         config: Settings = settings,
@@ -23,8 +27,11 @@ class ApprovalWorkflow:
         self.memory = memory or MemoryStore(config)
         self.draft_fn = draft_fn or self._draft_with_ollama
         self.gateway = gateway or OllamaGateway(config)
+        self._decision_lock = threading.Lock()
 
     def _run_path(self, run_id: str) -> Path:
+        if not self._RUN_ID_PATTERN.fullmatch(run_id):
+            raise FileNotFoundError("Invalid run identifier")
         return self.config.runs_path / f"{run_id}.json"
 
     def _save(self, record: RunRecord) -> None:
@@ -79,38 +86,40 @@ class ApprovalWorkflow:
         return record
 
     def approve(self, run_id: str, reviewer: str, reason: str = "") -> RunRecord:
-        record = self.load(run_id)
-        if record.status != RunStatus.DRAFTED:
-            raise ValueError(f"Run {run_id} is already {record.status}")
-        if not reviewer.strip():
-            raise ValueError("A named reviewer is required")
+        with self._decision_lock:
+            record = self.load(run_id)
+            if record.status != RunStatus.DRAFTED:
+                raise ValueError(f"Run {run_id} is already {record.status}")
+            if not reviewer.strip():
+                raise ValueError("A named reviewer is required")
 
-        artifacts_path = self.config.runs_path / "artifacts"
-        artifacts_path.mkdir(parents=True, exist_ok=True)
-        artifact_path = artifacts_path / f"{record.run_id}.md"
-        artifact_path.write_text(record.draft + "\n", encoding="utf-8")
+            artifacts_path = self.config.runs_path / "artifacts"
+            artifacts_path.mkdir(parents=True, exist_ok=True)
+            artifact_path = artifacts_path / f"{record.run_id}.md"
+            artifact_path.write_text(record.draft + "\n", encoding="utf-8")
 
-        record.status = RunStatus.APPROVED
-        record.reviewer = reviewer.strip()
-        record.review_reason = reason.strip() or None
-        record.artifact_path = str(artifact_path)
-        record.updated_at = datetime.now(UTC)
-        self._save(record)
-        return record
+            record.status = RunStatus.APPROVED
+            record.reviewer = reviewer.strip()
+            record.review_reason = reason.strip() or None
+            record.artifact_path = str(artifact_path)
+            record.updated_at = datetime.now(UTC)
+            self._save(record)
+            return record
 
     def reject(self, run_id: str, reviewer: str, reason: str) -> RunRecord:
-        record = self.load(run_id)
-        if record.status != RunStatus.DRAFTED:
-            raise ValueError(f"Run {run_id} is already {record.status}")
-        if not reviewer.strip() or not reason.strip():
-            raise ValueError("Reviewer and rejection reason are required")
+        with self._decision_lock:
+            record = self.load(run_id)
+            if record.status != RunStatus.DRAFTED:
+                raise ValueError(f"Run {run_id} is already {record.status}")
+            if not reviewer.strip() or not reason.strip():
+                raise ValueError("Reviewer and rejection reason are required")
 
-        record.status = RunStatus.REJECTED
-        record.reviewer = reviewer.strip()
-        record.review_reason = reason.strip()
-        record.updated_at = datetime.now(UTC)
-        self._save(record)
-        return record
+            record.status = RunStatus.REJECTED
+            record.reviewer = reviewer.strip()
+            record.review_reason = reason.strip()
+            record.updated_at = datetime.now(UTC)
+            self._save(record)
+            return record
 
     def metrics(self) -> dict[str, int | float]:
         records = [
