@@ -9,7 +9,7 @@ description = "A local-first, approval-gated personal agent system derived from 
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
-  "chromadb>=0.5,<1.0",
+  "chromadb>=0.5,<2.0",
   "fastapi>=0.115,<1",
   "mcp>=1.27,<2",
   "python-dotenv>=1.0,<2",
