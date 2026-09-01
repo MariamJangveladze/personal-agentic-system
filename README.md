@@ -68,6 +68,11 @@ reviewer.
    cp .env.example .env
    ```
 
+   The REST control endpoints require your own local `API_CONTROL_TOKEN` value
+   in `.env`. The repository does not include API keys, credentials, or a
+   reusable token. Optional model or Telegram integrations likewise require
+   credentials supplied by the person testing them.
+
 3. Index the synthetic example vault and run an approval-gated demo:
 
    ```bash

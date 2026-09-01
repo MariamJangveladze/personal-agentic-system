@@ -32,6 +32,11 @@ def auth() -> dict[str, str]:
     return {"Authorization": "Bearer test-token"}
 
 
+def test_settings_read_environment_when_instantiated(monkeypatch) -> None:
+    monkeypatch.setenv("API_CONTROL_TOKEN", "runtime-token")
+    assert Settings().api_control_token == "runtime-token"
+
+
 def test_health_contract(tmp_path: Path) -> None:
     response = build_client(tmp_path).get("/health")
     assert response.status_code == 200
