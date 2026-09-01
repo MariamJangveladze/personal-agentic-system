@@ -24,12 +24,8 @@ class Settings:
     ollama_url: str = field(
         default_factory=lambda: os.getenv("OLLAMA_URL", "http://localhost:11434")
     )
-    chat_model: str = field(
-        default_factory=lambda: os.getenv("OLLAMA_CHAT_MODEL", "qwen2.5:7b")
-    )
-    embed_model: str = field(
-        default_factory=lambda: os.getenv("OLLAMA_EMBED_MODEL", "bge-m3")
-    )
+    chat_model: str = field(default_factory=lambda: os.getenv("OLLAMA_CHAT_MODEL", "qwen2.5:7b"))
+    embed_model: str = field(default_factory=lambda: os.getenv("OLLAMA_EMBED_MODEL", "bge-m3"))
     chroma_path: Path = field(
         default_factory=lambda: Path(os.getenv("CHROMA_PATH", "storage/chroma"))
     )
@@ -39,9 +35,7 @@ class Settings:
     vault_path: Path = field(
         default_factory=lambda: Path(os.getenv("VAULT_PATH", "examples/vault"))
     )
-    runs_path: Path = field(
-        default_factory=lambda: Path(os.getenv("RUNS_PATH", "storage/runs"))
-    )
+    runs_path: Path = field(default_factory=lambda: Path(os.getenv("RUNS_PATH", "storage/runs")))
     api_host: str = field(default_factory=lambda: os.getenv("API_HOST", "127.0.0.1"))
     api_port: int = field(default_factory=lambda: int(os.getenv("API_PORT", "8001")))
     api_control_token: str = field(default_factory=lambda: os.getenv("API_CONTROL_TOKEN", ""))
